@@ -11,7 +11,7 @@ const myfirstLetterSearchButton = document.getElementById("firstLetterSearch");
 myfirstLetterSearchButton.addEventListener("click", () => {
   searchMode = "firstLetterSearch";
   // console.info(myfirstLetterInput.value);
-  myReasultView()
+  myReasultView(myfirstLetterInput.value)
 });
 
 const myNameInput = document.getElementById("nameInput");
@@ -20,7 +20,7 @@ const myNameSearchButton = document.getElementById("nameSearch");
 myNameSearchButton.addEventListener("click", () => {
   searchMode = "nameSearch";
   // console.info(myNameInput.value);
-  myReasultView();
+  myReasultView(myNameInput.value);
 });
 
 const myIdInput = document.getElementById("idInput");
@@ -29,38 +29,13 @@ const myIdSearchButton = document.getElementById("idSearch");
 myIdSearchButton.addEventListener("click", () => {
   searchMode = "idSearch";
   // console.info(myIdInput.value);
-  myReasultView();
+  myReasultView(myIdInput.value);
 });
 
 //-------------------------------------------------------------------------------------
 
 // fetch functions --------------------------------------------------------------------
 // your code goes here
-function myReasultView(myData) {
-  switch (searchMode) {
-    case 'firstLetterSearch':
-      console.log(myData);
-      getRecipiesByLetter(myfirstLetterInput.value);
-      break;
-
-    case 'nameSearch':
-      console.log(myData);
-      getRecipiesByName(myNameInput.value);
-      break;
-
-    case 'idSearch':
-      console.log(myData);
-      getRecipiesById(myIdInput.value);
-      break;
-
-    default:
-      console.warn("ooops no data to show from setupResultView");
-      break;
-  }
-}
-
-
-
 function getRecipiesByLetter(myFirstLetter) {
   fetch(`https://www.themealdb.com/api/json/v1/1/search.php?f=${myFirstLetter}`)
 
@@ -71,13 +46,13 @@ function getRecipiesByLetter(myFirstLetter) {
   .then((data) => {
     console.log(data.meals);
 
-    let myTextHTML = "";
+    data.meals.map((myMeal) => {
+      let myMealName = 
+      `<h2>${myMeal.strMeal}</h2>
+      <img src="${myMeal.strMealThumb}" alt="meal">`;
 
-      data.meals.map((myMeal) => {
-        myTextHTML += myMeal.strMeal + ", ";
-      });
-
-      myResultElement.textContent = myTextHTML;
+      myResultElement.innerHTML += myMealName;
+    });
   })
 
   .catch((error) => {
@@ -95,14 +70,13 @@ function getRecipiesByName(myFirstName) {
   .then((data) => {
     console.log(data.meals);
 
-    let myTextHTML = "";
+    data.meals.map((myMeal) => {
+      let myMealName = 
+      `<h2>${myMeal.strMeal}</h2>
+      <img src="${myMeal.strMealThumb}" alt="meal">`;
 
-      data.meals.map((myMeal) => {
-        myTextHTML += myMeal.strMeal + ", ";
-      });
-
-      myResultElement.textContent = myTextHTML;
-
+      myResultElement.innerHTML += myMealName;
+    });
   })
 
   .catch((error) => {
@@ -119,15 +93,15 @@ function getRecipiesById(myFirstId) {
 
   .then((data) => {
     console.log(data.meals);
+    data.meals.map((myMeal) => {
+      let myMealName = 
+      `<div>
+      <h2>${myMeal.strMeal}</h2>
+      <img src="${myMeal.strMealThumb}" alt="meal">
+      </div>`;
 
-    let myTextHTML = "";
-
-      data.meals.map((myMeal) => {
-        myTextHTML += myMeal.strMeal + ", ";
-      });
-
-      myResultElement.textContent = myTextHTML;
-
+      myResultElement.innerHTML += myMealName;
+    });
   })
 
   .catch((error) => {
@@ -136,38 +110,22 @@ function getRecipiesById(myFirstId) {
 }
 
 
-
-
-
-
 // view code --------------------------------------------------------------------------
-
-function setupResultView(myData) {
+function myReasultView(myData) {
   switch (searchMode) {
-    case "firstLetterSearch":
-      console.log(myData);
-      // do view stuff with the data here
+    case 'firstLetterSearch':
+      // console.log(myData);
+      getRecipiesByLetter(myData);
       break;
 
-    case "nameSearch":
-      console.log(myData.meals);
-      let myText = "";
-
-      myData.meals.map((myMeal) => {
-        myText += myMeal.strMeal + ", ";
-      });
-
-      myResultElement.textContent = myText;
+    case 'nameSearch':
+      // console.log(myData);
+      getRecipiesByName(myData);
       break;
 
-    case "idSearch":
-      console.log(myData);
-      // do view stuff with the data here
-      break;
-
-    case "errorMessage":
-      console.log(myData);
-      // do view stuff with the error msg here
+    case 'idSearch':
+      // console.log(myData);
+      getRecipiesById(myData);
       break;
 
     default:
@@ -175,3 +133,4 @@ function setupResultView(myData) {
       break;
   }
 }
+
